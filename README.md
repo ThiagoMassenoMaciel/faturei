@@ -170,3 +170,47 @@ expenses
   created_by    FK -> users.id
   created_at
 ```
+
+## Versão 1.0
+
+#### bugs
+
+##### Porque depois de eu conseguir logar um usuário no expo go ele sempre vai automaticamente selecionar o primeiro usuário cadastrado ? eu quero poder logar emoutros usuarios também . Na verdade o que aconteceu é que depois de eu consegui fazer login com um usuário "atendente@tiamaria.com" "123456" , mesmo depois de eu ter reiniciado o projeto no terminal do notebook para tentar fazer login com outro profile , ele depois da primeira tela de login nunca mais apareceu novamente a tela para fazer login com talvez outro profile. depois que o projeto foi feito assim "npx expo start --clear" e ele foi executado no expo go ele redireciona automaticamente para primeiro usuario que fez login
+
+##### A tela do app do perfil atendente não tem o botão logOut para sair da conta e voltar para tela de login. E gostaria de fazer assim , tipo no mesmo app a pessoa consegue cadastrar outro usuário da tabela profile , e simplesmente ter uma opãção para pessoa querer escolher qual dos profile ela quer usar , podendo trocar de um para o outro ( \*\*\*\*somente se no caso foi feito login no mesmo celular dos respectivos profile)
+
+##### Outro defeito é que depois que aparece outra tela em 1,2 segundos antes de aparecer a tela do perfil atentente .
+
+##### Outra coisa na tela do atendente ele colocou o botão 'Enviar pedido' no mesmo lugar da viewport que tem os botões nativos do celular [], () , < , deve ser colocado acima deles tipo - como se o bottom tivesse 80% do seu tamanho distante do bottom 0 da viewport do celular.
+
+##### Outra coisa que eu errei é dentro da tela do atentende nao aparece a opção cadastrar novo cliente soaparece o input para digitar o telefone de um clinete que ja esta cadastrado.
+
+##### Adicionar uma funcionalidade para conseguir buscar o cliente ja cadastrado apartir da rua do seu endereço também além de so perquisar por telefone ou nome . O principal seria buscar por nome e ou endereço
+
+##### Política RLS muito permissiva – A política atual "Allow all for authenticated" deixa qualquer autenticado ver todos os perfis. Se a consulta retorna uma lista e você usa .single(), pode pegar o primeiro se o filtro falhar.
+
+# Correções
+
+### 1. Vamos fazer uma depuração controlada e ajustar o código para garantir que cada login carregue o perfil correto.
+
+#### 1. Adicione logs para identificar o erro
+
+##### No AuthContext.tsx, modifique a função fetchProfile temporariamente:
+
+#### 2. Forçar limpeza total da sessão antes de logar
+
+##### Para garantir que nenhum resquício de sessão antiga interfira, faça logout explícito ao iniciar o app (apenas para teste). Adicione no useEffect inicial do AuthProvider:
+
+#### 3. Corrija o fluxo de autenticação para evitar sessão presa
+
+##### Atualize o AuthContext.tsx para garantir que, ao receber uma nova sessão, o perfil seja buscado corretamente e que o estado anterior seja limpo.
+
+#### 4. Verifique os UUIDs cadastrados
+
+##### É possível que você tenha criado os usuários no Authentication, mas na tabela profiles os IDs estejam trocados. Faça uma consulta para confirmar:
+
+#### 5. Ajuste a política RLS (recomendado)
+
+##### Para evitar que um usuário veja perfis alheios (e garantir que a consulta retorne apenas o dele), recrie as políticas com um filtro de dono:
+
+#### 6. Teste o login com outro usuário
