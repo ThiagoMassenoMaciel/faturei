@@ -10,25 +10,14 @@ import {
 } from "react-native";
 import { supabase } from "../../api/supabase";
 import { Order, OrderStatus } from "../../types/database";
-import { Audio } from "expo-av";
+import { useAudioPlayer } from "expo-audio";
 
 const KitchenPanel = () => {
   const [orders, setOrders] = useState<Order[]>([]);
-  const [sound, setSound] = useState<Audio.Sound | null>(null);
 
-  // Carregar som de alerta
-  useEffect(() => {
-    const loadSound = async () => {
-      const { sound } = await Audio.Sound.createAsync(
-        require("../../../assets/alert.mp3"),
-      );
-      setSound(sound);
-    };
-    loadSound();
-    return () => {
-      sound?.unloadAsync();
-    };
-  }, []);
+  // Carrega o áudio de alerta
+  const alertSource = require("../../../assets/alert.mp3");
+  const player = useAudioPlayer(alertSource);
 
   const fetchOrders = async () => {
     const { data } = await supabase
@@ -41,6 +30,14 @@ const KitchenPanel = () => {
     if (data) setOrders(data);
   };
 
+  const playAlert = () => {
+    if (player) {
+      // Reinicia o áudio do zero: substitui a fonte pela mesma e toca
+      player.replace(alertSource);
+      player.play();
+    }
+  };
+
   useEffect(() => {
     fetchOrders();
 
@@ -49,7 +46,7 @@ const KitchenPanel = () => {
       .on(
         "postgres_changes",
         { event: "INSERT", schema: "public", table: "orders" },
-        (payload) => {
+        () => {
           fetchOrders();
           playAlert();
         },
@@ -69,7 +66,7 @@ const KitchenPanel = () => {
             fetchOrders();
             playAlert();
           } else {
-            fetchOrders(); // atualiza normalmente
+            fetchOrders();
           }
         },
       )
@@ -79,16 +76,6 @@ const KitchenPanel = () => {
       supabase.removeChannel(channel);
     };
   }, []);
-
-  const playAlert = async () => {
-    if (sound) {
-      try {
-        await sound.replayAsync();
-      } catch (error) {
-        console.log("Erro ao tocar som:", error);
-      }
-    }
-  };
 
   const updateStatus = async (orderId: number, newStatus: OrderStatus) => {
     const { error } = await supabase
