@@ -171,6 +171,21 @@ expenses
   created_at
 ```
 
+# Status de um pedido
+
+```
+ nao_feito:      "#FF6B6B",   // vermelho
+    fazendo:     "#FFD93D",   // amarelo
+    feito:       "#6BCB77",   // verde
+    em_entrega:  "#4D96FF",   // azul
+    entregue:    "#B2B2B2",   // cinza
+    cancelado:   "#000000",   // preto
+```
+
+```
+=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
+```
+
 ## Versão 1.0
 
 #### bugs
@@ -189,7 +204,7 @@ expenses
 
 ##### Política RLS muito permissiva – A política atual "Allow all for authenticated" deixa qualquer autenticado ver todos os perfis. Se a consulta retorna uma lista e você usa .single(), pode pegar o primeiro se o filtro falhar.
 
-# Correções
+# Correções para versão 1.0
 
 ### 1. Vamos fazer uma depuração controlada e ajustar o código para garantir que cada login carregue o perfil correto.
 
@@ -213,4 +228,34 @@ expenses
 
 ##### Para evitar que um usuário veja perfis alheios (e garantir que a consulta retorne apenas o dele), recrie as políticas com um filtro de dono:
 
-#### 6. Teste o login com outro usuário
+#### 6. Teste o login com outros usuários
+
+#### 7. Visão geral das próximas alterações necessárias para perfil atendente.
+
+###### Passo 1: Criar a nova tela OrdersList.tsx (pedidos do dia com realtime).
+
+###### Passo 2: Modificar AttendantStack.tsx para incluir as duas telas.
+
+###### Passo 3: Modificar CreateOrder.tsx para cadastro de cliente e busca case insensitive.
+
+#### 8. um script SQL com 35 produtos variados para popular sua tabela products. Os itens simulam um cardápio de lanchonete/restaurante caseiro, com categorias e preços realistas.
+
+#### 9. deixar botões na area de segurança da viewport dos smartphones para nao entrar em conflito com os botões nativos dos celulares . 
+
+```
+três alterações principais:
+
+Criar uma tela inicial do atendente (OrdersList) com botão “Novo Pedido” e lista dos pedidos do dia que atualiza em tempo real quando a cozinheira altera o status.
+
+Ajustar a navegação para que essa tela seja a primeira, e ao criar um pedido o atendente volte para ela.
+
+Modificar a tela de criação de pedido (CreateOrder) para permitir cadastrar novo cliente com nome e telefone, e buscar clientes de forma case‑insensitive (ignorando maiúsculas/minúsculas).
+```
+
+# TESTES 1 : sucesso
+
+##### Meta: conseguir fazer login com todos usuários : admin, cozinheira, atendente e motoboy. Cada sessão de login feita em uma nova instancia do app no EXPO go .
+
+# TESTES 2 :
+
+##### Meta: conseguir fazer 3 usuarios usando o app ao mesmo tempo e a comunicação de um com o outro profile

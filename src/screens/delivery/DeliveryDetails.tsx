@@ -6,6 +6,8 @@ import { Order } from "../../types/database";
 import { useRoute, useNavigation } from "@react-navigation/native";
 import * as Linking from "expo-linking";
 
+import { SafeAreaView } from "react-native-safe-area-context";
+
 const DeliveryDetails = () => {
   const route = useRoute<any>();
   const navigation = useNavigation();
@@ -56,25 +58,28 @@ const DeliveryDetails = () => {
   if (!order) return <Text>Carregando...</Text>;
 
   return (
-    <View style={styles.container}>
-      <Text style={styles.title}>Pedido #{order.order_number}</Text>
-      <Text>Cliente: {order.customer?.name}</Text>
-      <Text>Endereço: {order.customer?.address}</Text>
-      <Text>Pagamento: {order.payment_method}</Text>
-      <Text>Total: R$ {order.total_value.toFixed(2)}</Text>
-      <View style={{ marginVertical: 10 }}>
-        <Button title="Abrir no Google Maps" onPress={openMap} />
+    <SafeAreaView style={styles.safeArea} edges={["bottom"]}>
+      <View style={styles.container}>
+        <Text style={styles.title}>Pedido #{order.order_number}</Text>
+        <Text>Cliente: {order.customer?.name}</Text>
+        <Text>Endereço: {order.customer?.address}</Text>
+        <Text>Pagamento: {order.payment_method}</Text>
+        <Text>Total: R$ {order.total_value.toFixed(2)}</Text>
+        <View style={{ marginVertical: 10 }}>
+          <Button title="Abrir no Google Maps" onPress={openMap} />
+        </View>
+        <Button
+          title="Finalizar Entrega"
+          onPress={finishDelivery}
+          color="green"
+        />
       </View>
-      <Button
-        title="Finalizar Entrega"
-        onPress={finishDelivery}
-        color="green"
-      />
-    </View>
+    </SafeAreaView>
   );
 };
 
 const styles = StyleSheet.create({
+  safeArea: { flex: 1, backgroundColor: "#fff" },
   container: { flex: 1, padding: 20, backgroundColor: "#fff" },
   title: { fontSize: 22, fontWeight: "bold", marginBottom: 10 },
 });

@@ -12,6 +12,8 @@ import { supabase } from "../../api/supabase";
 import { Order, OrderStatus } from "../../types/database";
 import { useAudioPlayer } from "expo-audio";
 
+import { SafeAreaView } from "react-native-safe-area-context";
+
 const KitchenPanel = () => {
   const [orders, setOrders] = useState<Order[]>([]);
 
@@ -121,18 +123,21 @@ const KitchenPanel = () => {
   };
 
   return (
-    <View style={styles.container}>
-      <Text style={styles.title}>Pedidos Ativos</Text>
-      <FlatList
-        data={orders}
-        renderItem={renderOrder}
-        keyExtractor={(item) => item.id.toString()}
-      />
-    </View>
+    <SafeAreaView style={styles.safeArea} edges={["bottom"]}>
+      <View style={styles.container}>
+        <Text style={styles.title}>Pedidos Ativos</Text>
+        <FlatList
+          data={orders}
+          renderItem={renderOrder}
+          keyExtractor={(item) => item.id.toString()}
+        />
+      </View>
+    </SafeAreaView>
   );
 };
 
 const styles = StyleSheet.create({
+  safeArea: { flex: 1, backgroundColor: "#fff" },
   container: { flex: 1, padding: 10, backgroundColor: "#fff" },
   title: { fontSize: 20, fontWeight: "bold", marginBottom: 10 },
   card: {

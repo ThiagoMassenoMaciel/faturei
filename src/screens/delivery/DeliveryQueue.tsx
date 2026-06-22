@@ -12,6 +12,8 @@ import { supabase } from "../../api/supabase";
 import { Order } from "../../types/database";
 import { useAuth } from "../../contexts/AuthContext";
 
+import { SafeAreaView } from "react-native-safe-area-context";
+
 const DeliveryQueue = ({ navigation }: any) => {
   const { profile } = useAuth();
   const [readyOrders, setReadyOrders] = useState<Order[]>([]);
@@ -99,17 +101,20 @@ const DeliveryQueue = ({ navigation }: any) => {
   );
 
   return (
-    <View style={styles.container}>
-      <FlatList
-        data={readyOrders}
-        keyExtractor={(item) => item.id.toString()}
-        renderItem={renderOrder}
-      />
-    </View>
+    <SafeAreaView style={styles.safeArea} edges={["bottom"]}>
+      <View style={styles.container}>
+        <FlatList
+          data={readyOrders}
+          keyExtractor={(item) => item.id.toString()}
+          renderItem={renderOrder}
+        />
+      </View>
+    </SafeAreaView>
   );
 };
 
 const styles = StyleSheet.create({
+  safeArea: { flex: 1, backgroundColor: "#fff" },
   container: { flex: 1, padding: 10, backgroundColor: "#fff" },
   card: { borderWidth: 1, padding: 15, marginBottom: 10, borderRadius: 8 },
   orderNumber: { fontSize: 20, fontWeight: "bold" },
